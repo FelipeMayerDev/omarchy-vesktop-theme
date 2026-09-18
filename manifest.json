@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "id": "focky.vesktop-theme",
+  "name": "Vesktop Theme Sync",
+  "version": "0.1.0",
+  "author": "Felipe Mayer",
+  "license": "MIT",
+  "description": "Makes Vesktop follow the current Omarchy theme.",
+  "kinds": ["service"],
+  "entryPoints": {
+    "service": "Service.qml"
+  }
+}

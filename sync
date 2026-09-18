@@ -1,0 +1,16 @@
+#!/bin/bash
+set -euo pipefail
+
+VESKTOP_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/vesktop"
+OMARCHY_THEME="${XDG_STATE_HOME:-$HOME/.local/state}/omarchy/current/theme/vencord.theme.css"
+SETTINGS="$VESKTOP_CONFIG/settings/settings.json"
+TARGET="$VESKTOP_CONFIG/themes/Omarchy.theme.css"
+
+[[ -f $SETTINGS && -f $OMARCHY_THEME ]] || exit 0
+
+mkdir -p "${TARGET%/*}"
+ln -sfn "$OMARCHY_THEME" "$TARGET"
+
+temp=$(mktemp "${SETTINGS}.XXXXXX")
+jq '.enabledThemes = [(.enabledThemes // [])[] | select(. != "Omarchy.theme.css")] + ["Omarchy.theme.css"]' "$SETTINGS" >"$temp"
+mv "$temp" "$SETTINGS"

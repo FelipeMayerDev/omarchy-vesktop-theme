@@ -1,0 +1,11 @@
+#!/bin/bash
+set -euo pipefail
+
+test_home=$(mktemp -d)
+trap 'rm -rf "$test_home"' EXIT
+mkdir -p "$test_home/.config/vesktop/settings" "$test_home/.local/state/omarchy/current/theme"
+printf '%s\n' '{"enabledThemes":["Other.theme.css"]}' >"$test_home/.config/vesktop/settings/settings.json"
+printf '%s\n' '/* Omarchy */' >"$test_home/.local/state/omarchy/current/theme/vencord.theme.css"
+HOME="$test_home" "$(dirname "$0")/../sync"
+test "$(readlink -f "$test_home/.config/vesktop/themes/Omarchy.theme.css")" = "$test_home/.local/state/omarchy/current/theme/vencord.theme.css"
+jq -e '.enabledThemes == ["Other.theme.css", "Omarchy.theme.css"]' "$test_home/.config/vesktop/settings/settings.json" >/dev/null
