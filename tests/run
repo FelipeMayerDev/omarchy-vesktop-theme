@@ -6,6 +6,11 @@ trap 'rm -rf "$test_home"' EXIT
 mkdir -p "$test_home/.config/vesktop/settings" "$test_home/.local/state/omarchy/current/theme"
 printf '%s\n' '{"enabledThemes":["Other.theme.css"]}' >"$test_home/.config/vesktop/settings/settings.json"
 printf '%s\n' '/* Omarchy */' >"$test_home/.local/state/omarchy/current/theme/vencord.theme.css"
-HOME="$test_home" "$(dirname "$0")/../sync"
-test "$(readlink -f "$test_home/.config/vesktop/themes/Omarchy.theme.css")" = "$test_home/.local/state/omarchy/current/theme/vencord.theme.css"
+HOME="$test_home" XDG_CONFIG_HOME= XDG_STATE_HOME= "$(dirname "$0")/../sync"
+
+theme="$test_home/.config/vesktop/themes/Omarchy.theme.css"
+grep -q '/\* Omarchy \*/' "$theme"
+grep -q 'border-radius: 0' "$theme"
 jq -e '.enabledThemes == ["Other.theme.css", "Omarchy.theme.css"]' "$test_home/.config/vesktop/settings/settings.json" >/dev/null
+test -f "$test_home/.config/omarchy/themed/vencord.theme.css.tpl"
+test -x "$test_home/.config/omarchy/hooks/theme-set.d/20-vesktop-theme"

@@ -2,12 +2,18 @@
 
 ![Omarchy Vesktop Theme](assets/cover.png)
 
-An Omarchy service plugin that makes Vesktop follow the current desktop theme
-without restarting the app.
+An Omarchy service plugin that makes Vesktop look like the rest of the desktop
+and follow the current theme without restarting the app.
 
-It enables a single Vencord theme named `Omarchy.theme.css`. That file is a
-dynamic symlink to Omarchy's current `vencord.theme.css`, so it follows every
-theme change without disconnecting calls.
+- **Colors** come from the current theme's `vencord.theme.css`. Themes that
+  don't ship one get it rendered from their `colors.toml` by a template the
+  plugin installs in `~/.config/omarchy/themed/`.
+- **Shape** comes from `style.theme.css`: square corners and server icons, the
+  system monospace font, thin dark scrollbars and no shadows.
+
+Both are inlined into a single enabled Vencord theme, `Omarchy.theme.css`,
+rewritten when the shell starts and by a `theme-set` hook on every theme
+change. Vesktop reloads it live, without disconnecting calls.
 
 ## Install
 
@@ -16,8 +22,7 @@ omarchy plugin add https://github.com/FelipeMayerDev/omarchy-vesktop-theme --ena
 ```
 
 Vesktop must have been opened at least once. The plugin does nothing when
-Vesktop is not configured, and runs automatically when the Omarchy shell
-starts.
+Vesktop is not configured.
 
 ## Development
 
@@ -26,4 +31,4 @@ starts.
 omarchy plugin validate .
 ```
 
-Run `./sync` to repair the link or re-enable the theme manually.
+Run `./sync` to regenerate the theme or re-enable it manually.

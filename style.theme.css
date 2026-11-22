@@ -1,0 +1,40 @@
+/**
+ * @name Omarchy Style
+ * @description Omarchy shape for Discord: square corners and server icons, system monospace, thin dark scrollbars, no elevation. Colors come from Omarchy.theme.css.
+ */
+
+:root,
+.theme-dark,
+.theme-light,
+.theme-darker,
+.theme-midnight,
+.visual-refresh {
+  /* "monospace, monospace" dodges Chromium shrinking a lone generic monospace to 13px */
+  --font-primary: monospace, monospace !important;
+  --font-display: monospace, monospace !important;
+  --font-headline: monospace, monospace !important;
+  --font-code: monospace, monospace !important;
+
+  --elevation-stroke: none !important;
+  --elevation-low: none !important;
+  --elevation-medium: none !important;
+  --elevation-high: none !important;
+}
+
+/* Hyprland runs rounding = 0; avatars and server icons are SVG masks, so they keep their shape */
+*,
+*::before,
+*::after {
+  border-radius: 0 !important;
+}
+
+/* Server icons are shaped by SVG masks; drop them in the server list (BetterFolders sidebar uses the same bar) */
+[class*="guilds_"] foreignObject {
+  mask: none !important;
+}
+
+/* Thin dark scrollbar; the standard properties override Discord's ::-webkit-scrollbar */
+* {
+  scrollbar-width: thin !important;
+  scrollbar-color: color-mix(in srgb, var(--color04) 50%, transparent) transparent !important;
+}

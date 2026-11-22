@@ -1,15 +1,41 @@
 #!/bin/bash
 set -euo pipefail
 
+PLUGIN_DIR=$(dirname "$(readlink -f "$0")")
+OMARCHY_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/omarchy"
 VESKTOP_CONFIG="${XDG_CONFIG_HOME:-$HOME/.config}/vesktop"
 OMARCHY_THEME="${XDG_STATE_HOME:-$HOME/.local/state}/omarchy/current/theme/vencord.theme.css"
 SETTINGS="$VESKTOP_CONFIG/settings/settings.json"
-TARGET="$VESKTOP_CONFIG/themes/Omarchy.theme.css"
+THEMES="$VESKTOP_CONFIG/themes"
+TEMPLATE="$OMARCHY_CONFIG/themed/vencord.theme.css.tpl"
+HOOK="$OMARCHY_CONFIG/hooks/theme-set.d/20-vesktop-theme"
 
-[[ -f $SETTINGS && -f $OMARCHY_THEME ]] || exit 0
+[[ -f $SETTINGS ]] || exit 0
 
-mkdir -p "${TARGET%/*}"
-ln -sfn "$OMARCHY_THEME" "$TARGET"
+# Themes that don't ship a vencord.theme.css get one rendered from colors.toml.
+if [[ ! -e $TEMPLATE ]]; then
+  mkdir -p "${TEMPLATE%/*}"
+  ln -s "$PLUGIN_DIR/vencord.theme.css.tpl" "$TEMPLATE"
+  [[ -f $OMARCHY_THEME ]] || omarchy-theme-refresh >/dev/null 2>&1 || true
+fi
+
+# Omarchy.theme.css is generated, so it has to be rewritten on every theme switch.
+if [[ ! -e $HOOK ]]; then
+  mkdir -p "${HOOK%/*}"
+  printf '#!/bin/bash\nexec bash %q\n' "$PLUGIN_DIR/sync" >"$HOOK"
+  chmod +x "$HOOK"
+fi
+
+[[ -f $OMARCHY_THEME ]] || exit 0
+
+# One enabled theme with everything inlined: Vesktop reloads it (cache-busted)
+# when the themes dir changes, but nested @imports stay cached, and a running
+# Vesktop overwrites settings.json from memory on quit.
+mkdir -p "$THEMES"
+out=$(mktemp "$THEMES/.omarchy.XXXXXX")
+cat "$OMARCHY_THEME" "$PLUGIN_DIR/style.theme.css" >"$out"
+chmod 644 "$out"
+mv "$out" "$THEMES/Omarchy.theme.css"
 
 temp=$(mktemp "${SETTINGS}.XXXXXX")
 jq '.enabledThemes = [(.enabledThemes // [])[] | select(. != "Omarchy.theme.css")] + ["Omarchy.theme.css"]' "$SETTINGS" >"$temp"
