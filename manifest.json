@@ -2,7 +2,7 @@
   "schemaVersion": 1,
   "id": "focky.vesktop-theme",
   "name": "Vesktop Theme Sync",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": "Felipe Mayer",
   "license": "MIT",
   "description": "Makes Vesktop follow the current Omarchy theme and look.",

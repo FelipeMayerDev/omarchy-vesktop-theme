@@ -8,8 +8,9 @@ and follow the current theme without restarting the app.
 - **Colors** come from the current theme's `vencord.theme.css`. Themes that
   don't ship one get it rendered from their `colors.toml` by a template the
   plugin installs in `~/.config/omarchy/themed/`.
-- **Shape** comes from `style.theme.css`: square corners and server icons, the
-  system monospace font, thin dark scrollbars and no shadows.
+- **Shape** comes from `style.theme.css`: panes as rounded windows with gaps and
+  an accent border on the chat, square server icons, the system monospace
+  font, thin dark scrollbars and no shadows.
 
 Both are inlined into a single enabled Vencord theme, `Omarchy.theme.css`,
 rewritten when the shell starts and by a `theme-set` hook on every theme

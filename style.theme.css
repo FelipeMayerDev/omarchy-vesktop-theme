@@ -1,6 +1,6 @@
 /**
  * @name Omarchy Style
- * @description Omarchy shape for Discord: square corners and server icons, system monospace, thin dark scrollbars, no elevation. Colors come from Omarchy.theme.css.
+ * @description Omarchy shape for Discord: panes as rounded Hyprland windows with gaps and an accent border on the chat, square server icons, system monospace, thin dark scrollbars, no elevation. Colors come from Omarchy.theme.css.
  */
 
 :root,
@@ -21,7 +21,7 @@
   --elevation-high: none !important;
 }
 
-/* Hyprland runs rounding = 0; avatars and server icons are SVG masks, so they keep their shape */
+/* Square by default; the window and row rules below round only what they name. Avatars are SVG masks, so they keep their shape */
 *,
 *::before,
 *::after {
@@ -37,4 +37,37 @@
 * {
   scrollbar-width: thin !important;
   scrollbar-color: color-mix(in srgb, var(--color04) 50%, transparent) transparent !important;
+}
+
+/* Windows: the gaps show the desktop color, each pane is a rounded window, the chat carries the active border */
+[class*="appMount_"] { zoom: .9; }
+[class*="base_"], [class*="base_"] > [class*="content_"], [class*="sidebar_"], [class*="page_"] { background: var(--color01) !important; }
+[class*="base_"] > [class*="content_"] { padding: 0 10px 10px 0 !important; box-sizing: border-box !important; }
+[class*="sidebarList_"], [class*="sidebar_"] > [class*="panels_"] {
+  margin: 0 0 10px 10px !important;
+  border: 2px solid color-mix(in srgb, var(--color04) 45%, transparent) !important;
+}
+[class*="sidebar_"] > [class*="panels_"] { bottom: 0 !important; }
+[class*="page_"] { margin-left: 10px !important; min-width: 0 !important; min-height: 0 !important; border: 2px solid var(--color15) !important; }
+[class*="sidebarList_"], [class*="sidebar_"] > [class*="panels_"], [class*="page_"] {
+  border-radius: 10px !important;
+  overflow: hidden !important;
+  background: var(--color00) !important;
+}
+[class*="page_"] [class*="chat_"], [class*="page_"] [class*="title_"][class*="themed_"], [class*="membersWrap_"], [class*="members_"] { background: var(--color00) !important; }
+[class*="membersWrap_"] { border-left: 1px solid var(--color02) !important; }
+
+/* Rows */
+[class*="containerDefault_"] [class*="wrapper_"], [class*="member_"], [class*="channelTextArea_"], [class*="searchBar_"], button { border-radius: 6px !important; }
+[class*="modeSelected_"] { background: color-mix(in srgb, var(--color15) 18%, transparent) !important; }
+[class*="modeSelected_"] [class*="name_"] { color: var(--color15) !important; }
+
+/* Section titles (channel categories, member groups) in the accent color */
+[class*="mainContent_"] h3, [class*="membersGroup_"] { color: var(--color15) !important; opacity: .75; }
+
+/* Unread: Discord's white pills become accent bars */
+[class*="listItem_"] [class*="overlay_"] [class*="item_"], [class*="containerDefault_"] [class*="unread_"] {
+  background: var(--color15) !important;
+  width: 3px !important;
+  border-radius: 0 4px 4px 0 !important;
 }
